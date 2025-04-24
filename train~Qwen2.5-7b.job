@@ -1,0 +1,10 @@
+#!/bin/bash
+#$ -M kle3@nd.edu
+#$ -m be
+#$ -pe smp 8
+#$ -q gpu@@lucy_a100
+#$ -l gpu=2
+#$ -N train~-7b
+conda activate LLM-2
+bash train~.sh 'qwen2.5-7b' 0
+bash train~.sh 'qwen2.5-7b' 1
