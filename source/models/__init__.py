@@ -10,7 +10,11 @@ get_llm_model_path = {
     'qwen2.5-7b'      : 'Qwen/Qwen2.5-7B-Instruct'                  ,
     'qwen2.5-14b'     : 'Qwen/Qwen2.5-14B-Instruct'                 ,
     'qwen2.5-32b'     : 'Qwen/Qwen2.5-32B-Instruct'                 ,
-    'gemma-2-2b'      : 'google/gemma-2-2b-it'                      ,
-    'gemma-2-9b'      : 'google/gemma-2-9b-it'                      ,
-    'gemma-2-27b'     : 'google/gemma-2-27b-it'                     ,
+    'r1-qwen2.5-14b'  : 'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B'  ,
+    'r1-qwen2.5-32b'  : 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B'  ,
+
+    'llama-3.1-8b'    : 'meta-llama/Llama-3.1-8B-Instruct'          ,
+    'llama-3.1-70b'   : 'meta-llama/Llama-3.1-70B-Instruct'         ,
+    'r1-llama-3.1-8b' : 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B'  ,
+    'r1-llama-3.1-70b': 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' ,
 }

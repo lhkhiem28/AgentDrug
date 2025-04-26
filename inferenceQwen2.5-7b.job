@@ -5,7 +5,7 @@
 #$ -q gpu@@lucy_a100
 #$ -l gpu=2
 #$ -N inference-7b
-conda activate LLM-2
+conda activate LLM
 bash inference.sh 'qwen2.5-7b' "None"   0
 bash inference.sh 'qwen2.5-7b' "None"   1
 bash inference.sh 'qwen2.5-7b' "redf"   0
