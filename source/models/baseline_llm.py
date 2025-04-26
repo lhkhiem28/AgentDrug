@@ -21,15 +21,10 @@ class BaselineLLM(torch.nn.Module):
             self.EOS_USER = '<|im_end|>\n<|im_start|>assistant\n'
             self.EOS = '<|im_end|>'
             self.IGNORE_INDEX = -100
-        if "gemma-3" in args.llm_model_path:
+        if "gemma-2" in args.llm_model_path:
             self.BOS = '<start_of_turn>user\n'
             self.EOS_USER = '<end_of_turn>\n<start_of_turn>model\n'
             self.EOS = '<end_of_turn>'
-            self.IGNORE_INDEX = -100
-        if "Llama-3" in args.llm_model_path:
-            self.BOS = '<|begin_of_text|><|start_header_id|>user<|end_header_id|>'
-            self.EOS_USER = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
-            self.EOS = '<|end_of_text|>'
             self.IGNORE_INDEX = -100
 
         print(f'Loading {args.llm_model_path}')
