@@ -21,7 +21,7 @@ def parse_args_llm():
     parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--wd", type=float, default=0)
     parser.add_argument("--batch_size", type=int, default=32)
-    parser.add_argument("--num_epochs", type=int, default=10)
+    parser.add_argument("--num_epochs", type=int, default=5)
 
     # Inference
     parser.add_argument("--max_new_tokens", type=int, default=256)
