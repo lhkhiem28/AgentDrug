@@ -1,0 +1,16 @@
+#!/bin/bash
+#$ -M kle3@nd.edu
+#$ -m be
+#$ -pe smp 8
+#$ -q gpu@qa-a100-003
+#$ -l gpu=2
+#$ -N inferenceLlama-3.1-70B
+conda activate LLM
+bash inference.sh 'llama-3.1-70b' "None"   0
+bash inference.sh 'llama-3.1-70b' "None"   1
+bash inference.sh 'llama-3.1-70b' "redf"   0
+bash inference.sh 'llama-3.1-70b' "redf"   1
+bash inference.sh 'llama-3.1-70b' "are2df" 0
+bash inference.sh 'llama-3.1-70b' "are2df" 1
+bash inference.sh 'llama-3.1-70b' "re2df"  0
+bash inference.sh 'llama-3.1-70b' "re2df"  1
