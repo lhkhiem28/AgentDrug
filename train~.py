@@ -63,7 +63,6 @@ def main(args):
         # gradient_accumulation_steps=4,
         num_train_epochs=1,
 
-        report_to="wandb",
         run_name=f"{args.model_name}_lora_r{args.lora_r}_{args.llm_model_name}_{args.run_name}_{args.hit_thres}",
         logging_strategy="steps",
         logging_steps=1,
