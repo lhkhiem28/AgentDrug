@@ -4,7 +4,7 @@
 #$ -pe smp 8
 #$ -q gpu@qa-a100-003
 #$ -l gpu=2
-#$ -N inferenceLlama-3.1-8B
+#$ -N inferenceLlama-3.1-08B
 conda activate LLM
 bash inference.sh 'llama-3.1-8b' "None"   0
 bash inference.sh 'llama-3.1-8b' "None"   1
