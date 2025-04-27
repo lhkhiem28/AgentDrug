@@ -4,7 +4,7 @@
 #$ -pe smp 8
 #$ -q gpu@qa-a100-003
 #$ -l gpu=2
-#$ -N train~Llama-3.1-70B
+#$ -N trainLlama-3.1-70B~
 conda activate LLM-2
 bash train~.sh 'llama-3.1-70b' 0
 bash train~.sh 'llama-3.1-70b' 1
