@@ -12,5 +12,3 @@ bash inference.sh 'qwen2.5-3b' "redf"   0
 bash inference.sh 'qwen2.5-3b' "redf"   1
 bash inference.sh 'qwen2.5-3b' "are2df" 0
 bash inference.sh 'qwen2.5-3b' "are2df" 1
-bash inference.sh 'qwen2.5-3b' "re2df"  0
-bash inference.sh 'qwen2.5-3b' "re2df"  1

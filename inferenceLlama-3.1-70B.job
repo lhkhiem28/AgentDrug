@@ -12,5 +12,3 @@ bash inference.sh 'llama-3.1-70b' "redf"   0
 bash inference.sh 'llama-3.1-70b' "redf"   1
 bash inference.sh 'llama-3.1-70b' "are2df" 0
 bash inference.sh 'llama-3.1-70b' "are2df" 1
-bash inference.sh 'llama-3.1-70b' "re2df"  0
-bash inference.sh 'llama-3.1-70b' "re2df"  1
