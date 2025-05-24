@@ -10,7 +10,7 @@ from source.config import parse_args_llm
 from source.utils.help_funcs import seed_everything
 from source.utils.help_funcs import collate_fn
 from source.datasets import load_dataset
-from source.models import load_model, get_llm_model_path
+from source.models import load_model, get_llm_path
 from source.utils.help_funcs import _save_checkpoint, _reload_model
 from source.utils.evaluation import *
 
@@ -46,7 +46,7 @@ def main(args):
     )
 
     # Step 2: Build Model
-    args.llm_model_path = get_llm_model_path[args.llm_model_name]
+    args.llm_path = get_llm_path[args.llm_name]
     model = load_model[args.model_name](args=args)
     if args.checkpoint_path is not None:
         model = _reload_model(model, args.checkpoint_path)
@@ -898,7 +898,7 @@ def main(args):
 
     # Step 4: Post-processing & Evaluating
     os.makedirs(f'{args.output_dir}/inference/{args.data}', exist_ok=True)
-    path = f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_model_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv'
+    path = f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv'
     scores = eval_funcs[args.dataset](eval_output, path, args.data, 
         hit_thres = args.hit_thres, 
     )
@@ -908,5 +908,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = parse_args_llm().parse_args()
-    print(f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_model_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv')
+    print(f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv')
     main(args)

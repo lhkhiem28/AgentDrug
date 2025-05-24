@@ -5,7 +5,7 @@ load_model = {
 }
 
 # Replace the following with the model paths
-get_llm_model_path = {
+get_llm_path = {
     'qwen2.5-3b'      : 'Qwen/Qwen2.5-3B-Instruct'                  ,
     'qwen2.5-7b'      : 'Qwen/Qwen2.5-7B-Instruct'                  ,
     'qwen2.5-14b'     : 'Qwen/Qwen2.5-14B-Instruct'                 ,

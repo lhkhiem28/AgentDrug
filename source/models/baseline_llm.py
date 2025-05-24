@@ -16,39 +16,39 @@ class BaselineLLM(torch.nn.Module):
     ):
         super().__init__()
         self.max_new_tokens = args.max_new_tokens
-        if "SmolLM2" in args.llm_model_path or "Qwen2.5" in args.llm_model_path:
+        if "SmolLM2" in args.llm_path or "Qwen2.5" in args.llm_path:
             self.BOS = '<|im_start|>user\n'
             self.EOS_USER = '<|im_end|>\n<|im_start|>assistant\n'
             self.EOS = '<|im_end|>'
             self.IGNORE_INDEX = -100
-        if "Llama-3" in args.llm_model_path:
+        if "Llama-3" in args.llm_path:
             self.BOS = '<|begin_of_text|><|start_header_id|>user<|end_header_id|>'
             self.EOS_USER = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
             self.EOS = '<|end_of_text|>'
             self.IGNORE_INDEX = -100
 
-        print(f'Loading {args.llm_model_path}')
+        print(f'Loading {args.llm_path}')
         kwargs = {
             "max_memory": {i: '80GiB' for i in range(args.n_gpus)},
             "device_map": "auto",
             "revision": "main",
         }
-        self.tokenizer = AutoTokenizer.from_pretrained(args.llm_model_path, use_fast=False, revision=kwargs["revision"])
+        self.tokenizer = AutoTokenizer.from_pretrained(args.llm_path, use_fast=False, revision=kwargs["revision"])
         self.tokenizer.pad_token_id = 0
         self.tokenizer.padding_side = 'left'
         model = AutoModelForCausalLM.from_pretrained(
-            args.llm_model_path,
+            args.llm_path,
             torch_dtype=torch.float16,
             low_cpu_mem_usage=True,
             **kwargs
         )
 
         if args.llm_frozen == 'True':
-            print(f"{args.llm_model_path} has been frozen!")
+            print(f"{args.llm_path} has been frozen!")
             for name, param in model.named_parameters():
                 param.requires_grad = False
         else:
-            print(f"{args.llm_model_path} has been factorized for training!")
+            print(f"{args.llm_path} has been factorized for training!")
             lora_r: int = args.lora_r
             lora_alpha: int = 16
             lora_dropout: float = 0.1

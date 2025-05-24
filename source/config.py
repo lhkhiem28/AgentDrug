@@ -7,7 +7,7 @@ def parse_args_llm():
 
     # Model related
     parser.add_argument("--model_name", type=str, default='baseline_llm')
-    parser.add_argument("--llm_model_name", type=str)
+    parser.add_argument("--llm_name", type=str)
     parser.add_argument("--llm_frozen", type=str, default='True')
     parser.add_argument("--lora_r", type=int, default=16)
     parser.add_argument("--n_gpus", type=int, default=2)

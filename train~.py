@@ -11,7 +11,7 @@ from source.config import parse_args_llm
 from source.utils.help_funcs import seed_everything
 from source.utils.help_funcs import collate_fn
 from source.datasets import load_dataset
-from source.models import load_model, get_llm_model_path
+from source.models import load_model, get_llm_path
 from source.utils.help_funcs import _save_checkpoint, _reload_model
 from source.utils.evaluation import *
 
@@ -27,7 +27,7 @@ def main(args):
     train_dataset = Dataset.from_list(train_dataset)
 
     # Step 2: Build Model and Optimizer
-    args.llm_model_path = get_llm_model_path[args.llm_model_name]
+    args.llm_path = get_llm_path[args.llm_name]
     model = load_model[args.model_name](args=args)
     trainable_params, all_param = model.print_trainable_params()
     print("-"*len(f"No. Trainable Params: {trainable_params} ({100 * trainable_params / all_param:.4f} %)"))
@@ -63,7 +63,7 @@ def main(args):
         # gradient_accumulation_steps=4,
         num_train_epochs=1,
 
-        run_name=f"{args.model_name}_lora_r{args.lora_r}_{args.llm_model_name}_{args.run_name}_{args.hit_thres}",
+        run_name=f"{args.model_name}_lora_r{args.lora_r}_{args.llm_name}_{args.run_name}_{args.hit_thres}",
         logging_strategy="steps",
         logging_steps=1,
     )
