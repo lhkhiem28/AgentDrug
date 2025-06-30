@@ -26,6 +26,11 @@ class BaselineLLM(torch.nn.Module):
             self.EOS_USER = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
             self.EOS = '<|end_of_text|>'
             self.IGNORE_INDEX = -100
+        if "OLMo-2" in args.llm_path:
+            self.BOS = '<|endoftext|><|user|>\n'
+            self.EOS_USER = '\n<|assistant|>\n'
+            self.EOS = '<|endoftext|>'
+            self.IGNORE_INDEX = -100
 
         print(f'Loading {args.llm_path}')
         kwargs = {
