@@ -9,10 +9,11 @@ class DatasetGeneration(Dataset):
         self.questions = pd.read_csv(f'{path}/{data}/{split}.csv')
         self.questions["SMILES"] = self.questions["SMILES"].str.replace('\\\\', '\\')
         if split == "test":
-            self.questions = self.questions.sample(n=200, random_state=0).reset_index(drop=True) if len(self.questions) > 200 else self.questions
+            self.questions = self.questions.sample(n=100, random_state=0).reset_index(drop=True) if len(self.questions) > 100 else self.questions
 
         DB_path = "/".join(data.split("/")[:-2])
         self.DB = pd.read_csv(f'{path}/{DB_path}/database.csv')
+        self.DB = self.DB.sample(n=10000, random_state=0).reset_index(drop=True)
         self.DB["SMILES"] = self.DB["SMILES"].str.replace('\\\\', '\\')
         self.DB["mol"] = self.DB["SMILES"].apply(Chem.MolFromSmiles)
         if "single" in data:
