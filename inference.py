@@ -1,4 +1,5 @@
 import os
+import time
 import tqdm
 import torch
 from torch.utils.data import DataLoader
@@ -56,6 +57,8 @@ def main(args):
     eval_output = []
     progress_bar_test = tqdm.tqdm(range(len(test_dataset)))
     validity_work, total_work = 0, 1e-8
+
+    start_time = time.time()
     for index in range(len(test_dataset)):
         batch = test_dataset[index]
         with torch.no_grad():
@@ -896,14 +899,16 @@ def main(args):
 
         progress_bar_test.update(1)
 
+    elapsed_time = time.time() - start_time
+
     # Step 4: Post-processing & Evaluating
     os.makedirs(f'{args.output_dir}/inference/{args.data}', exist_ok=True)
     path = f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv'
     scores = eval_funcs[args.dataset](eval_output, path, args.data, 
         hit_thres = args.hit_thres, 
     )
-    print("Hit: {:05.2f} Hit@0.5: {:05.2f} Morgan-FTS: {:05.2f} Validity: {:05.2f} Validity check: {:05.2f}".format(
-        *scores, 99.99*validity_work/total_work
+    print("Hit: {:05.2f} Hit@0.5: {:05.2f} Morgan-FTS: {:05.2f} Validity: {:05.2f} Validity check: {:05.2f} Runtime: {:05.2f}".format(
+        *scores, 99.99*validity_work/total_work, elapsed_time/len(test_dataset)
     ))
 
 if __name__ == "__main__":
