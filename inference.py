@@ -42,7 +42,7 @@ def main(args):
 
     # Step 1: Build Dataset
     test_dataset = load_dataset[args.dataset](path = args.path, data = args.data, split = "test", 
-        hit_thres = args.hit_thres, 
+        hit_thres = args.hit_thres, DB_size = args.DB_size, 
     )
 
     # Step 2: Build Model

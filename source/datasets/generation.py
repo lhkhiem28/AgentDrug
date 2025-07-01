@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 from source.utils.evaluation import *
 
 class DatasetGeneration(Dataset):
-    def __init__(self, path, data, split="train", hit_thres=0, use_DB=False):
+    def __init__(self, path, data, split="train", hit_thres=0, DB_size=None):
         super().__init__()
         prop = data.split("/")[-1]
         self.questions = pd.read_csv(f'{path}/{data}/{split}.csv')
@@ -13,7 +13,7 @@ class DatasetGeneration(Dataset):
 
         DB_path = "/".join(data.split("/")[:-2])
         self.DB = pd.read_csv(f'{path}/{DB_path}/database.csv')
-        self.DB = self.DB.sample(n=10000, random_state=0).reset_index(drop=True)
+        self.DB = self.DB.sample(n=DB_size, random_state=0).reset_index(drop=True)
         self.DB["SMILES"] = self.DB["SMILES"].str.replace('\\\\', '\\')
         self.DB["mol"] = self.DB["SMILES"].apply(Chem.MolFromSmiles)
         if "single" in data:
@@ -34,10 +34,6 @@ class DatasetGeneration(Dataset):
 
         self.data = data
         self.hit_thres = hit_thres
-        self.use_DB = use_DB
-        if self.use_DB:
-            self.DB["Text"] = self.questions["Text"].unique()[0]
-            self.questions = self.DB.sample(frac=0.1, random_state=0).reset_index(drop=True)
 
     def __len__(self):
         """Return the len of the dataset."""
@@ -47,18 +43,9 @@ class DatasetGeneration(Dataset):
         item = self.questions.iloc[index]
 
         question = f'{item["Text"]}\nRespond with only the SMILES string of your modified molecule. No explanation is needed.'
-        if self.use_DB:
-            return {
-                'id': index,
-                'data': self.data,
-                'hit_thres': self.hit_thres,
-                'smiles': item["SMILES"],
-                'prompt': f'{question}\n\nMolecule:{item["SMILES"]}\nAnswer:',
-            }
-        else:
-            return {
-                'id': index,
-                'smiles': item["SMILES"],
-                'prompt': f'{question}\n\nMolecule:{item["SMILES"]}\nAnswer:',
-                'label': item["modifiedSMILES"],
-            }
+        return {
+            'id': index,
+            'smiles': item["SMILES"],
+            'prompt': f'{question}\n\nMolecule:{item["SMILES"]}\nAnswer:',
+            'label': item["modifiedSMILES"],
+        }

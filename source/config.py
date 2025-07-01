@@ -27,6 +27,7 @@ def parse_args_llm():
     parser.add_argument("--max_new_tokens", type=int, default=256)
     parser.add_argument("--refine", type=str, default="None")
     parser.add_argument("--refine_steps", type=int)
+    parser.add_argument("--DB_size", type=int, default=10000)
 
     # Checkpoint
     parser.add_argument("--run_name", type=str, default='')
