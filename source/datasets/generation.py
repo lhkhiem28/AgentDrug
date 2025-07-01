@@ -13,7 +13,8 @@ class DatasetGeneration(Dataset):
 
         DB_path = "/".join(data.split("/")[:-2])
         self.DB = pd.read_csv(f'{path}/{DB_path}/database.csv')
-        self.DB = self.DB.sample(n=DB_size, random_state=0).reset_index(drop=True)
+        self.DB = self.DB.sample(frac=1, random_state=42).reset_index(drop=True)
+        self.DB = self.DB.head(DB_size)
         self.DB["SMILES"] = self.DB["SMILES"].str.replace('\\\\', '\\')
         self.DB["mol"] = self.DB["SMILES"].apply(Chem.MolFromSmiles)
         if "single" in data:
