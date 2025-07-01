@@ -18,8 +18,8 @@ get_llm_path = {
     'r1-llama-3.1-8b' : 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B'  ,
     'r1-llama-3.1-70b': 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' ,
 
-    'olmo-2-13b-sft'  : 'allenai/OLMo-2-1124-13B-SFT'               ,
-    'olmo-2-32b-sft'  : 'allenai/OLMo-2-0325-32B-SFT'               ,
-    'olmo-2-13b-dpo'  : 'allenai/OLMo-2-1124-13B-DPO'               ,
-    'olmo-2-32b-dpo'  : 'allenai/OLMo-2-0325-32B-DPO'               ,
+    'olmo-2-7b-sft'   : 'allenai/OLMo-2-1124-7B-SFT'                ,
+    'olmo-2-13b-sft'  : 'allenai/OLMo-2-0325-13B-SFT'               ,
+    'olmo-2-7b-dpo'   : 'allenai/OLMo-2-1124-7B-DPO'                ,
+    'olmo-2-13b-dpo'  : 'allenai/OLMo-2-0325-13B-DPO'               ,
 }
