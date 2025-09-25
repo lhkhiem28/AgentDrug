@@ -15,7 +15,8 @@ class BaselineLLM(torch.nn.Module):
         **kwargs
     ):
         super().__init__()
-        self.max_new_tokens = args.max_new_tokens
+        self.max_prompt_length = args.max_prompt_length
+        self.max_completion_length = args.max_completion_length
         if "Qwen2.5" in args.llm_path:
             self.BOS = '<|im_start|>user\n'
             self.EOS_USER = '<|im_end|>\n<|im_start|>assistant\n'
@@ -110,7 +111,7 @@ class BaselineLLM(torch.nn.Module):
         batch_label_input_ids = []
         for i in range(batch_size):
             # Add bos & eos token
-            label_input_ids = labels.input_ids[i][:self.max_new_tokens] + eos_tokens.input_ids
+            label_input_ids = labels.input_ids[i][:self.max_prompt_length] + eos_tokens.input_ids
             input_ids = prompts.input_ids[i] + eos_user_tokens.input_ids + label_input_ids
             inputs_embeds = self.word_embedding(torch.tensor(input_ids).to(self.model.device))
             inputs_embeds = torch.cat([bos_embeds, inputs_embeds], dim=0)
@@ -178,7 +179,7 @@ class BaselineLLM(torch.nn.Module):
                 inputs_embeds=inputs_embeds,
                 attention_mask=attention_mask,
                 pad_token_id=self.tokenizer.eos_token_id,
-                max_new_tokens=self.max_new_tokens,
+                max_new_tokens=self.max_completion_length,
                 do_sample=False, temperature=1.0, top_k=50, top_p=1.0,
                 use_cache=True  # IMPORTANT!
             )

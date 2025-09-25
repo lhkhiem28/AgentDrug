@@ -18,9 +18,10 @@ def parse_args_llm():
     parser.add_argument("--data", type=str)
     parser.add_argument("--split", type=str, default="train")
     parser.add_argument("--hit_thres", type=int)
+    parser.add_argument("--max_prompt_length", type=int, default=256)
 
     # Inference
-    parser.add_argument("--max_new_tokens", type=int, default=256)
+    parser.add_argument("--max_completion_length", type=int, default=256)
     parser.add_argument("--refine", type=str, default="None")
     parser.add_argument("--refine_steps", type=int)
     parser.add_argument("--DB_size", type=int, default=10000)
