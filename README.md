@@ -9,10 +9,9 @@ Datasets: https://huggingface.co/datasets/lhkhiem28/AgentDrug-datasets
 EMNLP '25 Findings
 
 [![Paper](https://img.shields.io/badge/Paper-arXiv:2410.13147-red?logoWidth=40)](https://arxiv.org/abs/2410.13147)
-[![Datasets](https://img.shields.io/badge/Dataset-Hugging_Face-yellow?logoWidth=40)](https://huggingface.co/datasets/lhkhiem28/AgentDrug-datasets)
 
 ## Requirements
-```python
+```bash
 rdkit==2025.3.3
 torch==2.7.1
 transformers==4.53.0
@@ -25,7 +24,7 @@ autogen==0.9.4
 
 ### 1. Datasets
 Download datasets from the above link and place the folder in the master directory:
-```
+```bash
 ├───AgentDrug
 │   ├───autogen
 │   └───source
