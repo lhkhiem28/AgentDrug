@@ -2,7 +2,6 @@ import os
 import time
 import tqdm
 import torch
-from torch.utils.data import DataLoader
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings; warnings.filterwarnings("ignore")
@@ -10,9 +9,9 @@ import warnings; warnings.filterwarnings("ignore")
 from source.config import parse_args_llm
 from source.utils.help_funcs import seed_everything
 from source.utils.help_funcs import collate_fn
-from source.datasets import load_dataset
-from source.models import load_model, get_llm_path
 from source.utils.help_funcs import _save_checkpoint, _reload_model
+from source.datasets import *
+from source.models import *
 from source.utils.evaluation import *
 
 import tempfile
@@ -41,12 +40,12 @@ def main(args):
     seed = args.seed
     seed_everything(seed=seed)
 
-    # Step 1: Build Dataset
+    # Step 1: Build dataset
     test_dataset = load_dataset[args.dataset](path = args.path, data = args.data, split = "test", 
         hit_thres = args.hit_thres, DB_size = args.DB_size, 
     )
 
-    # Step 2: Build Model
+    # Step 2: Build model
     args.llm_path = get_llm_path[args.llm_name]
     model = load_model[args.model_name](args=args)
     if args.checkpoint_path is not None:
@@ -54,7 +53,7 @@ def main(args):
 
     # Step 3: Evaluating
     model.eval()
-    eval_output = []
+    eval_outputs = []
     progress_bar_test = tqdm.tqdm(range(len(test_dataset)))
     validity_work, total_work = 0, 1e-8
 
@@ -66,7 +65,7 @@ def main(args):
                 output = model.inference(listize_fn(batch))
                 output["pred"] = [p.strip() if "->" not in p else p.split('->')[1].strip() for p in output["pred"]]
                 output["pred"] = [p.strip() if "becomes" not in p else p.split('becomes')[1].strip() for p in output["pred"]]
-                eval_output.append(output)
+                eval_outputs.append(output)
             elif args.refine == "self":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -86,7 +85,7 @@ def main(args):
                         feedback_output = model.inference(listize_fn(feedback_batch))['pred'][0].strip().replace("\n\n", "\n")
                         batch['prompt'] = ori_prompt + output["pred"][0] + f"\n\nImprove the modified molecule based on the following feedback:\n{feedback_output}\nRespond with only the SMILES string of your modified molecule. No explanation is needed."
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "redf":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -101,7 +100,7 @@ def main(args):
                             input_mol = Chem.MolFromSmiles(batch["smiles"])
                             output_mol = Chem.MolFromSmiles(output["pred"][0])
                             if output_mol is None:
-                                eval_output.append(output)
+                                eval_outputs.append(output)
                                 break
                             else:
                                 if "single" in args.data:
@@ -192,7 +191,7 @@ def main(args):
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     feedback_output = "The provided molecule is not correct. "
@@ -201,10 +200,10 @@ def main(args):
                                     feedback_output += f"We find a molecule {example} which is correct and similar to the provided molecule. "
                                     batch['prompt'] = ori_prompt + output["pred"][0] + f"\n{feedback_output}Can you give me a new molecule?\nRespond with only the SMILES string of your new molecule. No explanation is needed."
                         except:
-                            eval_output.append(output)
+                            eval_outputs.append(output)
                             break
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "redf-e":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -219,7 +218,7 @@ def main(args):
                             input_mol = Chem.MolFromSmiles(batch["smiles"])
                             output_mol = Chem.MolFromSmiles(output["pred"][0])
                             if output_mol is None:
-                                eval_output.append(output)
+                                eval_outputs.append(output)
                                 break
                             else:
                                 if "single" in args.data:
@@ -310,16 +309,16 @@ def main(args):
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     feedback_output = "The provided molecule is not correct. "
                                     batch['prompt'] = ori_prompt + output["pred"][0] + f"\n{feedback_output}Can you give me a new molecule?\nRespond with only the SMILES string of your new molecule. No explanation is needed."
                         except:
-                            eval_output.append(output)
+                            eval_outputs.append(output)
                             break
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "re2df":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -334,7 +333,7 @@ def main(args):
                             input_mol = Chem.MolFromSmiles(batch["smiles"])
                             output_mol = Chem.MolFromSmiles(output["pred"][0])
                             if output_mol is None:
-                                eval_output.append(output)
+                                eval_outputs.append(output)
                                 break
                             else:
                                 if "single" in args.data:
@@ -451,7 +450,7 @@ def main(args):
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                             property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     feedback_output = "Desired property:\n{}".format(property_feedback)
@@ -460,10 +459,10 @@ def main(args):
                                     feedback_output += f"\n\nFor your reference, we find a molecule {example} which is correct and similar to your modified molecule."
                                     batch['prompt'] = ori_prompt + output["pred"][0] + f"\n\nImprove the modified molecule based on the following feedback:\n{feedback_output}\nRespond with only the SMILES string of your modified molecule. No explanation is needed."
                         except:
-                            eval_output.append(output)
+                            eval_outputs.append(output)
                             break
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "re2df-e":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -478,7 +477,7 @@ def main(args):
                             input_mol = Chem.MolFromSmiles(batch["smiles"])
                             output_mol = Chem.MolFromSmiles(output["pred"][0])
                             if output_mol is None:
-                                eval_output.append(output)
+                                eval_outputs.append(output)
                                 break
                             else:
                                 if "single" in args.data:
@@ -595,16 +594,16 @@ def main(args):
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                             property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     feedback_output = "Desired property:\n{}".format(property_feedback)
                                     batch['prompt'] = ori_prompt + output["pred"][0] + f"\n\nImprove the modified molecule based on the following feedback:\n{feedback_output}\nRespond with only the SMILES string of your modified molecule. No explanation is needed."
                         except:
-                            eval_output.append(output)
+                            eval_outputs.append(output)
                             break
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "are2df":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -737,7 +736,7 @@ def main(args):
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                             property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     try:
@@ -751,7 +750,7 @@ def main(args):
                             continue
                         batch['prompt'] = ori_prompt + output["pred"][0] + f"\n\nImprove the modified molecule based on the following feedback:\n{feedback_output}\nRespond with only the SMILES string of your modified molecule. No explanation is needed."
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
             elif args.refine == "are2df-e":
                 prop = args.data.split("/")[-1]
                 ori_prompt = batch['prompt']
@@ -884,7 +883,7 @@ def main(args):
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
                                             property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
-                                    eval_output.append(output)
+                                    eval_outputs.append(output)
                                     break
                                 else:
                                     try:
@@ -895,16 +894,16 @@ def main(args):
                             continue
                         batch['prompt'] = ori_prompt + output["pred"][0] + f"\n\nImprove the modified molecule based on the following feedback:\n{feedback_output}\nRespond with only the SMILES string of your modified molecule. No explanation is needed."
                     else:
-                        eval_output.append(output)
+                        eval_outputs.append(output)
 
         progress_bar_test.update(1)
 
     elapsed_time = time.time() - start_time
 
-    # Step 4: Post-processing & Evaluating
+    # Step 4: Post-processing & report
     os.makedirs(f'{args.output_dir}/inference/{args.data}', exist_ok=True)
     path = f'{args.output_dir}/inference/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{args.refine}_refine_steps{args.refine_steps}_{args.hit_thres}.csv'
-    scores = eval_funcs[args.dataset](eval_output, path, args.data, 
+    scores = eval_funcs[args.dataset](eval_outputs, path, args.data, 
         hit_thres = args.hit_thres, 
     )
     print("Hit: {:05.2f} Hit@0.5: {:05.2f} Morgan-FTS: {:05.2f} Validity: {:05.2f} Validity check: {:05.2f} Runtime: {:05.2f}".format(

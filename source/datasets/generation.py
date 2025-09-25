@@ -2,7 +2,7 @@ import pandas as pd
 from torch.utils.data import Dataset
 from source.utils.evaluation import *
 
-class DatasetGeneration(Dataset):
+class GenerationDataset(Dataset):
     def __init__(self, path, data, split="train", hit_thres=0, DB_size=None):
         super().__init__()
         prop = data.split("/")[-1]
@@ -44,9 +44,8 @@ class DatasetGeneration(Dataset):
         item = self.questions.iloc[index]
 
         question = f'{item["Text"]}\nRespond with only the SMILES string of your modified molecule. No explanation is needed.'
-        return {
-            'id': index,
-            'smiles': item["SMILES"],
-            'prompt': f'{question}\n\nMolecule:{item["SMILES"]}\nAnswer:',
-            'label': item["modifiedSMILES"],
+        return {"id": index,
+            "smiles": item["SMILES"],
+            "prompt": f'{question}\n\nMolecule:{item["SMILES"]}\nAnswer:',
+            "label": item["modifiedSMILES"],
         }

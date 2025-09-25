@@ -6,7 +6,7 @@ def parse_args_llm():
     parser.add_argument("--seed", type=int, default=0)
 
     # Model related
-    parser.add_argument("--model_name", type=str, default='baseline_llm')
+    parser.add_argument("--model_name", type=str, default='llm')
     parser.add_argument("--llm_name", type=str)
     parser.add_argument("--llm_frozen", type=str, default='True')
     parser.add_argument("--lora_r", type=int, default=16)
@@ -18,10 +18,6 @@ def parse_args_llm():
     parser.add_argument("--data", type=str)
     parser.add_argument("--split", type=str, default="train")
     parser.add_argument("--hit_thres", type=int)
-    parser.add_argument("--lr", type=float, default=1e-5)
-    parser.add_argument("--wd", type=float, default=0)
-    parser.add_argument("--batch_size", type=int, default=32)
-    parser.add_argument("--num_epochs", type=int, default=5)
 
     # Inference
     parser.add_argument("--max_new_tokens", type=int, default=256)

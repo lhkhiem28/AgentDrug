@@ -1,5 +1,5 @@
-from source.datasets.generation import DatasetGeneration
+from source.datasets.generation import *
 
 load_dataset = {
-    'generation': DatasetGeneration,
+    'generation': GenerationDataset,
 }

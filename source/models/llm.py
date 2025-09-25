@@ -16,7 +16,7 @@ class BaselineLLM(torch.nn.Module):
     ):
         super().__init__()
         self.max_new_tokens = args.max_new_tokens
-        if "SmolLM2" in args.llm_path or "Qwen2.5" in args.llm_path:
+        if "Qwen2.5" in args.llm_path:
             self.BOS = '<|im_start|>user\n'
             self.EOS_USER = '<|im_end|>\n<|im_start|>assistant\n'
             self.EOS = '<|im_end|>'
@@ -25,11 +25,6 @@ class BaselineLLM(torch.nn.Module):
             self.BOS = '<|begin_of_text|><|start_header_id|>user<|end_header_id|>'
             self.EOS_USER = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
             self.EOS = '<|end_of_text|>'
-            self.IGNORE_INDEX = -100
-        if "OLMo-2" in args.llm_path:
-            self.BOS = '<|endoftext|><|user|>\n'
-            self.EOS_USER = '\n<|assistant|>\n'
-            self.EOS = '<|endoftext|>'
             self.IGNORE_INDEX = -100
 
         print(f'Loading {args.llm_path}')
@@ -57,7 +52,10 @@ class BaselineLLM(torch.nn.Module):
             lora_r: int = args.lora_r
             lora_alpha: int = 16
             lora_dropout: float = 0.1
-            lora_target_modules = ['k_proj', 'v_proj', 'q_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']
+            lora_target_modules = [
+                'k_proj', 'v_proj', 'q_proj', 'o_proj', 
+                'gate_proj', 'up_proj', 'down_proj'
+            ]
             config = LoraConfig(
                 r=lora_r,
                 lora_alpha=lora_alpha,
@@ -70,6 +68,19 @@ class BaselineLLM(torch.nn.Module):
         self.model = model
         self.word_embedding = self.model.model.get_input_embeddings()
 
+    def print_trainable_params(self):
+        trainable_params = 0
+        all_param = 0
+
+        for _, param in self.named_parameters():
+            num_params = param.numel()
+
+            all_param += num_params
+            if param.requires_grad:
+                trainable_params += num_params
+
+        return trainable_params, all_param
+
     @property
     def device(self):
         return list(self.parameters())[0].device
@@ -77,17 +88,15 @@ class BaselineLLM(torch.nn.Module):
     def maybe_autocast(self, dtype=torch.bfloat16):
         # if on cpu, don't use autocast
         # if on gpu, use autocast with dtype if provided, otherwise use torch.float16
-        enable_autocast = self.device != torch.device("cpu")
-
-        if enable_autocast:
+        if self.device != torch.device("cpu"):
             return torch.cuda.amp.autocast(dtype=dtype)
         else:
             return contextlib.nullcontext()
 
     def forward(self, samples):
-        # encode description, prompts and labels
+        # encode prompts and labels
         prompts = self.tokenizer(samples["prompt"], add_special_tokens=False)
-        labels = self.tokenizer(samples['label'], add_special_tokens=False)
+        labels = self.tokenizer(samples["label"], add_special_tokens=False)
 
         # encode special tokens
         eos_tokens = self.tokenizer(self.EOS, add_special_tokens=False)
@@ -95,7 +104,7 @@ class BaselineLLM(torch.nn.Module):
         bos_embeds = self.word_embedding(self.tokenizer(self.BOS, add_special_tokens=False, return_tensors='pt').input_ids[0].to(self.model.device))
         pad_embeds = self.word_embedding(torch.tensor(self.tokenizer.pad_token_id).to(self.model.device)).unsqueeze(0)
 
-        batch_size = len(samples['id'])
+        batch_size = len(samples["id"])
         batch_inputs_embeds = []
         batch_attention_mask = []
         batch_label_input_ids = []
@@ -134,7 +143,7 @@ class BaselineLLM(torch.nn.Module):
         return outputs.loss
 
     def inference(self, samples):
-        # encode description and prompts
+        # encode prompts
         prompts = self.tokenizer(samples["prompt"], add_special_tokens=False)
 
         # encode special tokens
@@ -142,7 +151,7 @@ class BaselineLLM(torch.nn.Module):
         bos_embeds = self.word_embedding(self.tokenizer(self.BOS, add_special_tokens=False, return_tensors='pt').input_ids[0].to(self.model.device))
         pad_embeds = self.word_embedding(torch.tensor(self.tokenizer.pad_token_id).to(self.model.device)).unsqueeze(0)
 
-        batch_size = len(samples['id'])
+        batch_size = len(samples["id"])
         batch_inputs_embeds = []
         batch_attention_mask = []
         for i in range(batch_size):
@@ -170,25 +179,13 @@ class BaselineLLM(torch.nn.Module):
                 attention_mask=attention_mask,
                 pad_token_id=self.tokenizer.eos_token_id,
                 max_new_tokens=self.max_new_tokens,
+                do_sample=False, temperature=1.0, top_k=50, top_p=1.0,
                 use_cache=True  # IMPORTANT!
             )
-        pred = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
-        pred = [p.strip() for p in pred]
+        preds = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        preds = [p.strip() for p in preds]
 
-        return {'id': samples['id'],
-                'pred': pred,
-                'label': samples['smiles'],
+        return {"id": samples["id"],
+                "label": samples['smiles'],
+                "pred": preds,
         }
-
-    def print_trainable_params(self):
-        trainable_params = 0
-        all_param = 0
-
-        for _, param in self.named_parameters():
-            num_params = param.numel()
-
-            all_param += num_params
-            if param.requires_grad:
-                trainable_params += num_params
-
-        return trainable_params, all_param

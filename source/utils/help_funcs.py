@@ -22,7 +22,7 @@ def _save_checkpoint(model, cur_epoch, args, is_best=False):
     Save the checkpoint at the current epoch.
     """
     os.makedirs(f'{args.output_dir}/{args.split}/{args.data}', exist_ok=True)
-    path = f'{args.output_dir}/{args.split}/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.num_epochs}epochs_lr{args.lr}_{args.split}_{"best" if is_best else cur_epoch}_{args.hit_thres}_{args.run_name}.pth'
+    path = f'{args.output_dir}/{args.split}/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{"best" if is_best else cur_epoch}_{args.hit_thres}_{args.run_name}.pth'
     print("Saving checkpoint at epoch {} to {}".format(cur_epoch, path))
 
     param_grad_dic = {
