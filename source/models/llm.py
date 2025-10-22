@@ -29,7 +29,6 @@ class BaselineLLM(torch.nn.Module):
             self.EOS = '<|end_of_text|>'
             self.IGNORE_INDEX = -100
 
-        print(f'Loading {args.llm_path}')
         kwargs = {
             "max_memory": {i: '80GiB' for i in range(args.n_gpus)},
             "device_map": "auto",
@@ -44,13 +43,13 @@ class BaselineLLM(torch.nn.Module):
             low_cpu_mem_usage=True,
             **kwargs
         )
+        print(f'Loaded {args.llm_path}')
 
         if args.llm_frozen == 'True':
             print(f"{args.llm_path} has been frozen!")
             for name, param in model.named_parameters():
                 param.requires_grad = False
         else:
-            print(f"{args.llm_path} has been factorized for training!")
             lora_r: int = args.lora_r
             lora_alpha: int = 16
             lora_dropout: float = 0.1
@@ -67,6 +66,7 @@ class BaselineLLM(torch.nn.Module):
                 task_type="CAUSAL_LM",
             )
             model = get_peft_model(model, config)
+            print(f'{args.llm_path} has been factorized for training with a rank of {args.lora_r}!')
         self.model = model
         self.word_embedding = self.model.model.get_input_embeddings()
 

@@ -23,7 +23,6 @@ def _save_checkpoint(model, cur_epoch, args, is_best=False):
     """
     os.makedirs(f'{args.output_dir}/{args.split}/{args.data}', exist_ok=True)
     path = f'{args.output_dir}/{args.split}/{args.data}/{args.model_name}_{args.llm_name}_llm_frozen{args.llm_frozen}_{args.split}_{"best" if is_best else cur_epoch}_{args.hit_thres}_{args.run_name}.pth'
-    print("Saving checkpoint at epoch {} to {}".format(cur_epoch, path))
 
     param_grad_dic = {
         name: param.requires_grad for (name, param) in model.named_parameters()
@@ -37,14 +36,14 @@ def _save_checkpoint(model, cur_epoch, args, is_best=False):
         "config": args,
     }
     torch.save(save_obj, path)
+    print("Saved checkpoint at epoch {} to {}".format(cur_epoch, path))
 
 def _reload_model(model, checkpoint_path, strict=False):
     """
     Load the best checkpoint for evaluation.
     """
-    print("Loading checkpoint from {}.".format(checkpoint_path))
-
     checkpoint = torch.load(checkpoint_path, weights_only=False, map_location="cpu")
     model.load_state_dict(checkpoint["model"], strict=strict)
+    print("Loaded checkpoint from {}.".format(checkpoint_path))
 
     return model
