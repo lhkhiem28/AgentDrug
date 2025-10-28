@@ -33,9 +33,8 @@ task2prop = {
     "QED+"  : "qed",
     "QED-"  : "qed",
 }
-prop_pred = [(n, func) for n, func in Descriptors.descList if n.split("_")[-1] in list(set(task2prop.values()))]
 prop2func = {}
-for prop, func in prop_pred:
+for prop, func in [(n, func) for n, func in Descriptors.descList if n.split("_")[-1] in list(set(task2prop.values()))]:
     prop2func[prop] = func
 task2func = {k:prop2func[task2prop[k]] for k in task2prop.keys()}
 
