@@ -5,7 +5,7 @@
 #$ -q gpu@qa-a100-003
 #$ -l gpu=2
 #$ -N inferenceLlama-3.1-70B
-conda activate MolOpt
+conda activate MO
 bash inference.sh 'llama-3.1-70b' "None"   0 10000
 bash inference.sh 'llama-3.1-70b' "None"   1 10000
 bash inference.sh 'llama-3.1-70b' "redf"   0 10000
