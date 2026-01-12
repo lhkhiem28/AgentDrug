@@ -36,7 +36,7 @@ Download datasets from the above link and place the folder in the master directo
 Use the `inference.sh` script with the following arguments to reproduce our main results (Table 2):
 - `llm_name`: LLM name
 - `data`: path to the set of input molecules (`single/multi`/`property`/`+/-`)
-- `refine`: refinement method (`are2df` for AgentDrug)
+- `refine`: refinement method
 - `refine_steps`: number of refinement steps
 - `hit_thres`: threshold (`l`: loose or `s`: strict)
 - `DB_size`: size of the database for retrieval
