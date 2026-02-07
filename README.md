@@ -4,7 +4,7 @@ Datasets: https://huggingface.co/datasets/lhkhiem28/AgentDrug-datasets
 
 ---
 
-# AgentDrug: Utilizing Large Language Models in an Agentic Workflow for Zero-Shot Molecular Optimization
+# AgentDrug: Utilizing Large Language Models in an Agentic Workflow for Zero-Shot Molecular Editing
 
 EMNLP '25 Findings
 
@@ -46,7 +46,7 @@ Examples are provided in `*.job` files.
 ## Citation
 ```
 @article{le2024utilizing,
-  title={AgentDrug: Utilizing Large Language Models in an Agentic Workflow for Zero-Shot Molecular Optimization},
+  title={AgentDrug: Utilizing Large Language Models in an Agentic Workflow for Zero-Shot Molecular Editing},
   author={Khiem Le and Ting Hua and Nitesh V. Chawla},
   journal={arXiv preprint arXiv:2410.13147},
   year={2024}
