@@ -6,7 +6,7 @@ Datasets: https://huggingface.co/datasets/lhkhiem28/AgentDrug-datasets
 
 # AgentDrug: Utilizing Large Language Models in an Agentic Workflow for Zero-Shot Molecular Editing
 
-EMNLP '25 Findings
+EMNLP'25 Findings
 
 [![Paper](https://img.shields.io/badge/Paper-arXiv:2410.13147-red?logoWidth=40)](https://arxiv.org/abs/2410.13147)
 
