@@ -24,7 +24,7 @@ autogen==0.9.4
 
 ## Reproducibility
 
-### 1. Datasets
+### 1. Download datasets
 Download datasets from the above link and place the folder in the master directory:
 ```bash
 ├───AgentDrug
