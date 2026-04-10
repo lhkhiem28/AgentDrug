@@ -112,8 +112,8 @@ class BaselineLLM(torch.nn.Module):
         batch_label_input_ids = []
         for i in range(batch_size):
             # Add bos & eos token
-            label_input_ids = labels.input_ids[i][:self.max_prompt_length] + eos_tokens.input_ids
-            input_ids = prompts.input_ids[i] + eos_user_tokens.input_ids + label_input_ids
+            label_input_ids = labels.input_ids[i] + eos_tokens.input_ids
+            input_ids = prompts.input_ids[i][:self.max_prompt_length] + eos_user_tokens.input_ids + label_input_ids
             inputs_embeds = self.word_embedding(torch.tensor(input_ids).to(self.model.device))
             inputs_embeds = torch.cat([bos_embeds, inputs_embeds], dim=0)
 
