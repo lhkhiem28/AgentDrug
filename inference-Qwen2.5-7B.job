@@ -4,7 +4,7 @@
 #$ -pe smp 8
 #$ -q gpu@qa-a100-003
 #$ -l gpu=2
-#$ -N inferenceQwen2.5-7B
+#$ -N inference-Qwen2.5-7B
 conda activate AgentDrug
 bash inference.sh 'qwen2.5-7b' "None"      0 10000
 bash inference.sh 'qwen2.5-7b' "None"      1 10000
