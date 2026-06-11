@@ -375,11 +375,11 @@ def main(args):
                                     if prop == "QED+":
                                         hit = output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                         DB = test_dataset.DB[test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0]]
-                                        property_feedback = f"The modified molecule has a quantitative estimation of drug-likeness of {round(output_prop, 4)} and the original one has a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                        property_feedback = f"The modified molecule has a drug-likeness of {round(output_prop, 4)} and the original one has a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                     if prop == "QED-":
                                         hit = output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                         DB = test_dataset.DB[test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                        property_feedback = f"The modified molecule has a quantitative estimation of drug-likeness of {round(output_prop, 4)} and the original one has a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                        property_feedback = f"The modified molecule has a drug-likeness of {round(output_prop, 4)} and the original one has a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if "multi" in args.data:
                                     logp, prop = prop[:5], prop[5:]
                                     input_logp, input_prop = task2func[logp](input_mol), task2func[prop](input_mol)
@@ -412,11 +412,11 @@ def main(args):
                                         if prop == "QED+":
                                             hit = output_logp > input_logp + task2thres[logp][args.hit_thres][0] and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] > input_logp + task2thres[logp][args.hit_thres][0]) & (test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0])]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                         if prop == "QED-":
                                             hit = output_logp > input_logp + task2thres[logp][args.hit_thres][0] and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] > input_logp + task2thres[logp][args.hit_thres][0]) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                     if logp == "LogP-":
                                         if prop == "TPSA+":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
@@ -445,11 +445,11 @@ def main(args):
                                         if prop == "QED+":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & (test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0])]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                         if prop == "QED-":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
                                     eval_outputs.append(output)
                                     break
@@ -522,11 +522,11 @@ def main(args):
                                     if prop == "QED+":
                                         hit = output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                         DB = test_dataset.DB[test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0]]
-                                        property_feedback = f"The modified molecule has a quantitative estimation of drug-likeness of {round(output_prop, 4)} and the original one has a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                        property_feedback = f"The modified molecule has a drug-likeness of {round(output_prop, 4)} and the original one has a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                     if prop == "QED-":
                                         hit = output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                         DB = test_dataset.DB[test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                        property_feedback = f"The modified molecule has a quantitative estimation of drug-likeness of {round(output_prop, 4)} and the original one has a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                        property_feedback = f"The modified molecule has a drug-likeness of {round(output_prop, 4)} and the original one has a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if "multi" in args.data:
                                     logp, prop = prop[:5], prop[5:]
                                     input_logp, input_prop = task2func[logp](input_mol), task2func[prop](input_mol)
@@ -559,11 +559,11 @@ def main(args):
                                         if prop == "QED+":
                                             hit = output_logp > input_logp + task2thres[logp][args.hit_thres][0] and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] > input_logp + task2thres[logp][args.hit_thres][0]) & (test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0])]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                         if prop == "QED-":
                                             hit = output_logp > input_logp + task2thres[logp][args.hit_thres][0] and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] > input_logp + task2thres[logp][args.hit_thres][0]) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                     if logp == "LogP-":
                                         if prop == "TPSA+":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
@@ -592,11 +592,11 @@ def main(args):
                                         if prop == "QED+":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop > input_prop + task2thres[prop][args.hit_thres][0]
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & (test_dataset.DB["prop"] > input_prop + task2thres[prop][args.hit_thres][0])]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                         if prop == "QED-":
                                             hit = output_logp + task2thres[logp][args.hit_thres][0] < input_logp and output_prop + task2thres[prop][args.hit_thres][0] < input_prop
                                             DB = test_dataset.DB[(test_dataset.DB["logp"] + task2thres[logp][args.hit_thres][0] < input_logp) & test_dataset.DB["prop"] + task2thres[prop][args.hit_thres][0] < input_prop]
-                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a quantitative estimation of drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a quantitative estimation of drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
+                                            property_feedback = f"The modified molecule has a LogP value of {round(output_logp, 4)} and a drug-likeness of {round(output_prop, 4)}, and the original one has a LogP value of {round(input_logp, 4)} and a drug-likeness of {round(input_prop, 4)}. Therefore, the modified molecule is not correct."
                                 if hit:
                                     eval_outputs.append(output)
                                     break
