@@ -2,7 +2,7 @@
 #$ -M kle3@nd.edu
 #$ -m be
 #$ -pe smp 8
-#$ -q gpu@qa-a100-003
+#$ -q gpu@@lucy
 #$ -l gpu=2
 #$ -N inference-Qwen2.5-3B
 conda activate AgentDrug
