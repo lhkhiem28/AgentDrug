@@ -5,7 +5,7 @@
 #$ -q gpu@@lucy
 #$ -l gpu=2
 #$ -N inference-Qwen2.5-7B
-conda activate AgentDrug
+conda activate ME-AgentDrug
 bash inference.sh 'qwen2.5-7b' "None"      0 10000
 bash inference.sh 'qwen2.5-7b' "None"      1 10000
 bash inference.sh 'qwen2.5-7b' "chatdrug"  0 10000
